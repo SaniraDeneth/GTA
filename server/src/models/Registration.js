@@ -1,0 +1,3 @@
+import mongoose from 'mongoose';
+const registrationSchema = new mongoose.Schema({ teamId: { type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true, unique: true }, status: { type: String, enum: ['pending_payment', 'pending_review', 'approved', 'rejected'], required: true, default: 'pending_payment' }, payment: { reference: String, date: Date, slipKey: String, slipMime: String, submittedAt: Date, reviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, reviewedAt: Date, rejectionReason: String }, feeAmount: { type: Number, required: true, min: 0 } }, { timestamps: true });
+export default mongoose.model('Registration', registrationSchema);

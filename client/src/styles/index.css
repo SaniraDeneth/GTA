@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+:root { --color-bg: #0b1020; --color-surface: #141b2d; --color-text: #eef2ff; --color-muted: #9aa7c1; --color-accent: #67e8f9; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: system-ui, sans-serif; }
+a { color: var(--color-accent); text-decoration: none; }
+.app-shell { min-height: 100vh; display: flex; flex-direction: column; }
+.site-header, .site-footer { padding: 1rem 2rem; background: var(--color-surface); }
+.site-header { display: flex; justify-content: space-between; align-items: center; }
+.site-header nav { display: flex; gap: 1rem; }
+.brand { font-weight: 800; letter-spacing: .08em; }
+.page-content { flex: 1; width: min(1100px, 100% - 2rem); margin: 0 auto; padding: 3rem 0; }
