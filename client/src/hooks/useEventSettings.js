@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { getPublicSettings } from '../api/public.js';
 import { sampleSettings } from '../data/sampleSettings.js';
 
-const USE_SAMPLE = import.meta.env.VITE_USE_SAMPLE_SETTINGS === 'true';
+// Dummy data is ON by default until the backend is ready.
+// When the real API exists, set VITE_USE_SAMPLE_SETTINGS=false in client/.env.
+const USE_SAMPLE = import.meta.env.VITE_USE_SAMPLE_SETTINGS !== 'false';
 
 // One shared request, so Navbar, Hero and Home do not each call the API.
 let cached = null;
