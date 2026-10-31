@@ -6,7 +6,8 @@ import sponsor3 from '../assets/sponsors/sponsor-3.svg';
 import sponsor4 from '../assets/sponsors/sponsor-4.svg';
 
 export const eventContent = {
-  name: 'NEXUS',
+    name: 'Cyberpunk',
+  logo: { first: 'CYBER', second: 'PUNK' },
   label: 'GAME BUILDATHON',
   heroLines: ['CREATE', 'PLAY', 'BEYOND'],
   tagline: 'A 48-hour game development buildathon for dreamers, builders and gamers.',
@@ -31,7 +32,7 @@ export const eventContent = {
   about: {
     title: 'BUILD GAMES',
     highlight: 'THAT MATTER',
-    text: 'NEXUS is a game development buildathon bringing together creators, designers and developers to build innovative games, learn, and showcase their talent.',
+    text: 'Cyberpunk is a game development buildathon bringing together creators, designers and developers to build innovative games, learn, and showcase their talent.',
     cards: [
       { title: 'Innovate', text: 'Bring your ideas to life' },
       { title: 'Collaborate', text: 'Work with amazing people' },

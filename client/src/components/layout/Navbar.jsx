@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { eventContent } from '../../data/eventContent.js';
 import RegisterButton from '../event/RegisterButton.jsx';
+import Logo from '../ui/Logo.jsx';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -10,8 +11,8 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-neon-purple/30 bg-night/90 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
-        <Link to="/" className="font-display text-2xl font-black tracking-widest text-white">
-          NE<span className="text-neon-cyan">X</span>US
+        <Link to="/" aria-label={`${eventContent.name} home`}>
+          <Logo />
         </Link>
 
         <nav aria-label="Main navigation" className="hidden items-center gap-6 font-body text-lg font-semibold lg:flex">
