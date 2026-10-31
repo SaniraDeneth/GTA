@@ -3,6 +3,9 @@ import About from '../components/event/About.jsx';
 import Countdown from '../components/event/Countdown.jsx';
 import Agenda from '../components/event/Agenda.jsx';
 import Prizes from '../components/event/Prizes.jsx';
+import Rules from '../components/event/Rules.jsx';
+import Sponsors from '../components/event/Sponsors.jsx';
+import Faq from '../components/event/Faq.jsx';
 import useEventSettings from '../hooks/useEventSettings.js';
 
 export default function Home() {
@@ -25,6 +28,9 @@ export default function Home() {
       </section>
 
       <Prizes />
+      <Rules />
+      <Sponsors />
+      <Faq />
     </div>
   );
 }

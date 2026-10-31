@@ -1,7 +1,11 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { eventContent } from '../../data/eventContent.js';
 
 export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
+
   return (
     <header className="sticky top-0 z-50 border-b border-neon-purple/30 bg-night/90 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
@@ -18,17 +22,44 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <Link to="/login" className="font-body text-lg font-semibold text-neon-cyan hover:underline">
+          <Link to="/login" className="hidden font-body text-lg font-semibold text-neon-cyan hover:underline sm:block">
             Login
           </Link>
           <Link
             to="/register"
-            className="rounded bg-neon-pink px-4 py-2 font-body text-lg font-bold text-white shadow-[0_0_18px_rgba(255,43,214,0.55)] transition hover:brightness-110"
+            className="hidden rounded bg-neon-pink px-4 py-2 font-body text-lg font-bold text-white shadow-[0_0_18px_rgba(255,43,214,0.55)] transition hover:brightness-110 sm:block"
           >
             Register Now
           </Link>
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            className="rounded border border-neon-purple/60 px-3 py-1 text-2xl text-white lg:hidden"
+          >
+            {open ? '✕' : '☰'}
+          </button>
         </div>
       </div>
+
+      {open && (
+        <nav aria-label="Mobile navigation" className="border-t border-neon-purple/30 bg-night px-4 pb-5 pt-3 lg:hidden">
+          <div className="flex flex-col gap-3 font-body text-xl font-semibold">
+            {eventContent.navLinks.map((link) => (
+              <a key={link.label} href={`/${link.href}`} onClick={close} className="text-slate-200">
+                {link.label}
+              </a>
+            ))}
+            <Link to="/login" onClick={close} className="text-neon-cyan">
+              Login
+            </Link>
+            <Link to="/register" onClick={close} className="w-fit rounded bg-neon-pink px-5 py-2 font-bold text-white">
+              Register Now
+            </Link>
+          </div>
+        </nav>
+      )}
     </header>
   );
 }

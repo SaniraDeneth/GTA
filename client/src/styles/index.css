@@ -31,3 +31,6 @@ body { margin: 0; background: var(--color-bg); color: var(--color-text); font-fa
 /* Lets the homepage sections use the full screen width */
 body { overflow-x: hidden; }
 .full-bleed { width: 100vw; margin-left: calc(50% - 50vw); margin-top: -3rem; margin-bottom: -3rem; }
+
+/* Keeps section titles visible below the sticky navbar */
+section[id] { scroll-margin-top: 5rem; }
