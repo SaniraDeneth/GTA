@@ -1,21 +1,21 @@
 import RegisterButton from './RegisterButton.jsx';
+import Icon from '../ui/Icon.jsx';
+import heroCity from '../../assets/hero-city.png';
 import { eventContent } from '../../data/eventContent.js';
-import heroCity from '../../assets/hero-city.svg';
 
 const lineColors = ['text-white', 'text-neon-cyan', 'text-neon-pink'];
 
 export default function Hero() {
   const { label, heroLines, tagline, info } = eventContent;
   const infoItems = [
-    { value: info.dates, caption: 'EVENT DATES' },
-    { value: info.venue, caption: 'VENUE' },
-    { value: info.teamSize, caption: 'TEAM SIZE' },
+    { icon: 'calendar', value: info.dates, caption: 'EVENT DATES' },
+    { icon: 'pin', value: info.venue, caption: 'VENUE' },
+    { icon: 'users', value: info.teamSize, caption: 'TEAM SIZE' },
   ];
 
   return (
     <section id="home" className="relative overflow-hidden bg-night">
-      {/* Neon glow background (we can swap this for the city image later) */}
-            <img
+      <img
         src={heroCity}
         alt=""
         aria-hidden="true"
@@ -49,9 +49,12 @@ export default function Hero() {
 
         <div className="mt-12 flex flex-wrap gap-x-10 gap-y-6">
           {infoItems.map((item) => (
-            <div key={item.caption} className="border-l-2 border-neon-cyan pl-3">
-              <p className="font-body text-lg font-bold text-white">{item.value}</p>
-              <p className="font-body text-xs tracking-widest text-slate-400">{item.caption}</p>
+            <div key={item.caption} className="flex items-center gap-3">
+              <Icon name={item.icon} size={30} className="text-neon-pink" />
+              <div>
+                <p className="font-body text-lg font-bold text-white">{item.value}</p>
+                <p className="font-body text-xs tracking-widest text-slate-400">{item.caption}</p>
+              </div>
             </div>
           ))}
         </div>

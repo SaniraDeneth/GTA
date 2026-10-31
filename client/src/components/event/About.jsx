@@ -1,6 +1,12 @@
 import { eventContent } from '../../data/eventContent.js';
+import Icon from '../ui/Icon.jsx';
 
-const icons = ['💡', '🤝', '🎮', '🏆'];
+const cardIcons = [
+  { name: 'bulb', color: 'text-neon-cyan' },
+  { name: 'users', color: 'text-[#b07bff]' },
+  { name: 'gamepad', color: 'text-neon-pink' },
+  { name: 'trophy', color: 'text-prize-gold' },
+];
 
 export default function About() {
   const { about } = eventContent;
@@ -28,7 +34,7 @@ export default function About() {
               key={card.title}
               className="rounded-lg border border-neon-purple/40 bg-night-card p-5 transition hover:border-neon-cyan hover:shadow-[0_0_20px_rgba(0,229,255,0.2)]"
             >
-              <div className="text-3xl">{icons[i]}</div>
+              <Icon name={cardIcons[i].name} size={34} className={cardIcons[i].color} />
               <h3 className="mt-3 font-display text-lg font-bold text-white">{card.title}</h3>
               <p className="mt-1 font-body text-base text-slate-400">{card.text}</p>
             </div>

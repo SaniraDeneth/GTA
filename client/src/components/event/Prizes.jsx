@@ -1,4 +1,5 @@
 import { eventContent } from '../../data/eventContent.js';
+import Icon from '../ui/Icon.jsx';
 
 // Full class names are written out so Tailwind can find them
 const styles = {
@@ -21,12 +22,16 @@ export default function Prizes() {
             const s = styles[prize.color];
             return (
               <div key={prize.place} className={`rounded-xl border bg-night-card p-6 ${s.border} ${s.glow}`}>
-                <p className={`font-body text-lg font-bold ${s.text}`}>🏆 {prize.place}</p>
-                <p className="mt-2 font-display text-3xl font-black text-white">{prize.amount}</p>
+                <p className={`flex items-center gap-2 font-body text-lg font-bold ${s.text}`}>
+                  <Icon name="trophy" size={30} />
+                  {prize.place}
+                </p>
+                <p className="mt-3 font-display text-3xl font-black text-white">{prize.amount}</p>
                 <ul className="mt-5 space-y-2 font-body text-lg text-slate-300">
                   {prize.perks.map((perk) => (
-                    <li key={perk}>
-                      <span className={s.text}>✓</span> {perk}
+                    <li key={perk} className="flex items-center gap-2">
+                      <Icon name="check" size={18} glow={false} className={s.text} />
+                      {perk}
                     </li>
                   ))}
                 </ul>

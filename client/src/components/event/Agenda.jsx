@@ -1,8 +1,16 @@
 import { eventContent } from '../../data/eventContent.js';
 import { formatColombo } from '../../utils/dates.js';
 import useNow from '../../hooks/useNow.js';
+import Icon from '../ui/Icon.jsx';
 
-const icons = ['📝', '🔒', '▶️', '📤', '⏱️', '🏆'];
+const stepIcons = {
+  registrationOpensAt: 'document',
+  registrationClosesAt: 'lock',
+  buildingStartsAt: 'play',
+  submissionOpensAt: 'upload',
+  submissionClosesAt: 'timer',
+  resultsAt: 'trophy',
+};
 
 export default function Agenda({ settings, status }) {
   const now = useNow(settings?.offsetMs ?? 0);
@@ -34,12 +42,19 @@ export default function Agenda({ settings, status }) {
             : isDone
               ? 'border-neon-cyan/40 opacity-70'
               : 'border-neon-purple/30';
+          const ring = isNext
+            ? 'border-neon-pink text-neon-pink'
+            : isDone
+              ? 'border-neon-cyan/50 text-neon-cyan'
+              : 'border-neon-purple/60 text-[#b07bff]';
           const badge = isNext ? 'UP NEXT' : isDone ? 'COMPLETED' : hasDate ? 'UPCOMING' : 'TO BE ANNOUNCED';
 
           return (
             <li key={step.key} className={`rounded-lg border bg-night-card p-4 text-center ${box}`}>
-              <div className="text-3xl">{icons[i]}</div>
-              <h3 className="mt-2 font-body text-lg font-bold text-white">{step.label}</h3>
+              <span className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 ${ring}`}>
+                <Icon name={stepIcons[step.key]} size={26} glow={!isDone} />
+              </span>
+              <h3 className="mt-3 font-body text-lg font-bold text-white">{step.label}</h3>
               <p className="mt-1 font-body text-sm text-slate-400">
                 {hasDate ? formatColombo(step.iso) : 'Date to be announced'}
               </p>
