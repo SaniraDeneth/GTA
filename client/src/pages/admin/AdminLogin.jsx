@@ -66,7 +66,7 @@ export default function AdminLogin() {
             OVERSEER <span className="text-[#00e5ff] drop-shadow-[0_0_12px_rgba(0,229,255,0.8)]">LOGIN</span>
           </h1>
           <p className="mt-2 text-sm text-[#9aa7c1] tracking-wide">
-            Authorized personnel only.
+            Authorized personnel only. All access attempts are logged and monitored.
           </p>
         </div>
 
@@ -101,7 +101,7 @@ export default function AdminLogin() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="admin@buildathon"
+                  placeholder="admin@buildathon.local"
                   required
                   className="w-full pl-11 pr-4 py-3 bg-[#070714] border border-[#00e5ff]/30 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#00e5ff] focus:ring-1 focus:ring-[#00e5ff] shadow-inner transition-colors text-base"
                 />
