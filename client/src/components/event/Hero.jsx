@@ -1,5 +1,6 @@
 import RegisterButton from './RegisterButton.jsx';
 import { eventContent } from '../../data/eventContent.js';
+import heroCity from '../../assets/hero-city.svg';
 
 const lineColors = ['text-white', 'text-neon-cyan', 'text-neon-pink'];
 
@@ -14,21 +15,14 @@ export default function Hero() {
   return (
     <section id="home" className="relative overflow-hidden bg-night">
       {/* Neon glow background (we can swap this for the city image later) */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(circle at 75% 30%, rgba(139,61,255,0.45), transparent 55%), radial-gradient(circle at 15% 85%, rgba(255,43,214,0.25), transparent 50%)',
-        }}
+            <img
+        src={heroCity}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-right"
       />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-20"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(0,229,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.2) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-        }}
-      />
+      {/* Dark layer on the left so the headline stays easy to read */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-night/80 via-night/20 to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-28">
         <p className="mb-4 font-body text-sm font-bold tracking-[0.3em] text-neon-pink">{label}</p>

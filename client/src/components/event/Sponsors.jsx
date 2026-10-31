@@ -16,7 +16,11 @@ export default function Sponsors() {
               className="flex h-28 items-center justify-center rounded-lg border border-neon-purple/40 bg-night-card p-4 text-center transition hover:border-neon-cyan"
             >
               {/* When we get real logos: use <img src={sponsor.logo} alt={sponsor.name} /> here */}
-              <span className="font-display text-sm font-bold tracking-wider text-slate-300">{sponsor.name}</span>
+                            {sponsor.logo ? (
+                <img src={sponsor.logo} alt={sponsor.name} className="max-h-full w-full object-contain" />
+              ) : (
+                <span className="font-display text-sm font-bold tracking-wider text-slate-300">{sponsor.name}</span>
+              )}
             </div>
           ))}
         </div>

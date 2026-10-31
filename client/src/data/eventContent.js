@@ -1,5 +1,9 @@
 // Public event copy belongs to Yuwandhi. Keep this file as the shared content boundary.
 // NOTE: Everything marked PLACEHOLDER must be replaced with the real wording from the supervisor.
+import sponsor1 from '../assets/sponsors/sponsor-1.svg';
+import sponsor2 from '../assets/sponsors/sponsor-2.svg';
+import sponsor3 from '../assets/sponsors/sponsor-3.svg';
+import sponsor4 from '../assets/sponsors/sponsor-4.svg';
 
 export const eventContent = {
   name: 'NEXUS',
@@ -55,10 +59,10 @@ export const eventContent = {
 
   // PLACEHOLDER sponsors
   sponsors: [
-    { name: 'Sponsor One' },
-    { name: 'Sponsor Two' },
-    { name: 'Sponsor Three' },
-    { name: 'Sponsor Four' },
+    { name: 'Sponsor One', logo: sponsor1 },
+    { name: 'Sponsor Two', logo: sponsor2 },
+    { name: 'Sponsor Three', logo: sponsor3 },
+    { name: 'Sponsor Four', logo: sponsor4 },
   ],
 
   // PLACEHOLDER rules
