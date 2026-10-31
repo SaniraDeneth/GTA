@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import RegisterButton from './RegisterButton.jsx';
 import { eventContent } from '../../data/eventContent.js';
 
 const lineColors = ['text-white', 'text-neon-cyan', 'text-neon-pink'];
@@ -44,12 +44,7 @@ export default function Hero() {
         <p className="mt-6 max-w-md font-body text-xl text-slate-200">{tagline}</p>
 
         <div className="mt-8 flex flex-wrap gap-4">
-          <Link
-            to="/register"
-            className="rounded bg-neon-pink px-7 py-3 font-body text-lg font-bold text-white shadow-[0_0_22px_rgba(255,43,214,0.6)] transition hover:brightness-110"
-          >
-            Register Now →
-          </Link>
+          <RegisterButton arrow className="px-7 py-3 text-lg" />
           <a
             href="/#about"
             className="rounded border border-neon-pink px-7 py-3 font-body text-lg font-bold text-neon-pink transition hover:bg-neon-pink/10"

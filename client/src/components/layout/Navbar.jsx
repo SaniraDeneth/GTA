@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { eventContent } from '../../data/eventContent.js';
+import RegisterButton from '../event/RegisterButton.jsx';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -25,12 +26,7 @@ export default function Navbar() {
           <Link to="/login" className="hidden font-body text-lg font-semibold text-neon-cyan hover:underline sm:block">
             Login
           </Link>
-          <Link
-            to="/register"
-            className="hidden rounded bg-neon-pink px-4 py-2 font-body text-lg font-bold text-white shadow-[0_0_18px_rgba(255,43,214,0.55)] transition hover:brightness-110 sm:block"
-          >
-            Register Now
-          </Link>
+          <RegisterButton className="hidden px-4 py-2 text-base sm:block" />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -54,9 +50,7 @@ export default function Navbar() {
             <Link to="/login" onClick={close} className="text-neon-cyan">
               Login
             </Link>
-            <Link to="/register" onClick={close} className="w-fit rounded bg-neon-pink px-5 py-2 font-bold text-white">
-              Register Now
-            </Link>
+            <RegisterButton onClick={close} className="w-fit px-5 py-2 text-lg" />
           </div>
         </nav>
       )}
