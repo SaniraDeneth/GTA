@@ -4,11 +4,11 @@ All JSON responses use `{ "success": true, "data": {} }`. Errors use `{ "success
 
 | Method and path | Request fields | Expected data | Auth | Owner |
 |---|---|---|---|---|
-| GET `/api/public/settings` | None | Event settings, milestones, and effective public modes | Public | Yuwandhi |
-| POST `/api/auth/register` | `email`, `password`, `team` (`name`, `leaderName`, `leaderEmail`, `members`) | Created user/team summary | Public | Akindu |
-| POST `/api/auth/login` | `email`, `password` | Authenticated user summary | Public | Akindu |
+| GET `/api/public/settings` | None | Event settings, milestones, and effective public modes | Public | Rihaz (Yuwandhi consumes) |
+| POST `/api/auth/register` | `email`, `password`, `team` (`name`, `leaderName`, `members`) | `user`, `team`, `registration`; signs the leader in | Public, while registration is open | Akindu |
+| POST `/api/auth/login` | `email`, `password` | `user` | Public | Akindu |
 | POST `/api/auth/logout` | None | `data: { loggedOut: true }` | Session | Akindu |
-| GET `/api/auth/me` | None | Current user and team summary | Session | Akindu |
+| GET `/api/auth/me` | None | `user`, `team`, `registration` | Session | Akindu |
 | GET `/api/team/me` | None | Team and registration summary | Team session | Thanish |
 | PATCH `/api/team/me` | Editable team name/member fields | Updated team | Team session | Thanish |
 | POST `/api/team/payment` | Multipart `reference`, `date`, `slip` | Registration/payment status | Team session | Thanish |
@@ -23,3 +23,9 @@ All JSON responses use `{ "success": true, "data": {} }`. Errors use `{ "success
 | GET `/api/admin/submissions` | Optional query filters | Submission list with team details | Admin session | Rihaz |
 
 The listed request fields map to the five Mongoose models. Exact validation and error codes should be added by the responsible developer without changing the response envelope. Until implemented, route placeholders return `501 NOT_IMPLEMENTED`.
+
+Validation errors may add `error.fields`, which maps a form field to its message. Registration uses `email`, `password`, `teamName`, `leaderName` and `members`.
+
+On registration, the server sets `leaderEmail` from `email` and always counts the leader as a member, so `team.members` only needs the other members. Team size is limited by `TEAM_MIN_SIZE` and `TEAM_MAX_SIZE`.
+
+All `/api/team/*` routes need a team session and all `/api/admin/*` routes need an admin session: 401 when signed out, 403 for the wrong account type.
