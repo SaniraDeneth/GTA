@@ -18,7 +18,7 @@ There are five collections and no others.
 
 ## Statuses and modes
 
-**Registration status:** `pending_payment` → `pending_review` → `approved` or `rejected`. A rejected team returns to `pending_review` by uploading a new slip. *(needs ruling: the Day 1 and Day 3 assignments use `waiting_for_slip` and `waiting_for_approval` for the first two; the SRS, architecture document, model and admin screens use the names here)*
+**Registration status:** `waiting_for_slip` → `waiting_for_approval` → `approved` or `rejected`. A rejected team returns to `waiting_for_approval` by uploading a new slip. *(The SRS and architecture document call the first two `pending_payment` and `pending_review`; this sheet replaces those names.)*
 
 **Window mode:** `auto`, `force_open` or `force_closed`, set separately for registration and submission.
 
@@ -79,7 +79,7 @@ Every response uses `{ "success": true, "data": {} }` or `{ "success": false, "e
         { "name": "Example Member", "email": "member@example.com" }
       ]
     },
-    "registration": { "id": "665f1c0a2b3c4d5e6f708194", "status": "pending_payment", "feeAmount": 0, "payment": {} }
+    "registration": { "id": "665f1c0a2b3c4d5e6f708194", "status": "waiting_for_slip", "feeAmount": 0, "payment": {} }
   }
 }
 ```

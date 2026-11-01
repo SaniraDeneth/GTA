@@ -48,7 +48,7 @@ export async function register(req, res) {
   try {
     team = await Team.create(value.team);
     user = await User.create({ email: value.email, passwordHash, role: 'team', teamId: team._id });
-    registration = await Registration.create({ teamId: team._id, status: 'pending_payment', feeAmount: env.registrationFee });
+    registration = await Registration.create({ teamId: team._id, status: 'waiting_for_slip', feeAmount: env.registrationFee });
   } catch (error) {
     await Promise.allSettled([user && User.deleteOne({ _id: user._id }), team && Team.deleteOne({ _id: team._id })]);
     throw error.code === 11000 ? duplicateError(error) : error;
