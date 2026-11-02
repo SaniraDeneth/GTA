@@ -2,436 +2,567 @@
 import { useState } from "react";
 
 export default function SubmissionPage() {
-  const [isOpen, setIsOpen] = useState(true);
-
-  const [game, setGame] = useState({
-    title: "",
-    description: "",
-    repoUrl: "",
-    playableUrl: "",
-    videoUrl: "",
-  });
-
-  const [savedGame, setSavedGame] = useState({
+  const exampleGame = {
     title: "Cyber Quest",
     description:
       "A cyberpunk adventure game where players solve puzzles and explore a futuristic world.",
-    repoUrl: "https://github.com/example/cyber-quest",
-    playableUrl: "https://example.com/cyber-quest",
+    repoUrl: "https://github.com/octocat/Hello-World",
+    playableUrl: "https://example.com",
     videoUrl: "",
-  });
+  };
 
-  const [showSaved, setShowSaved] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [game, setGame] = useState({ ...exampleGame });
+  const [savedGame, setSavedGame] = useState({ ...exampleGame });
+  const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState({});
 
-  function handleChange(e) {
-    setGame({
-      ...game,
-      [e.target.name]: e.target.value,
-    });
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    setGame((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
+
+    setErrors((previous) => ({
+      ...previous,
+      [name]: "",
+    }));
+
+    setMessage("");
   }
 
-  function handleSave(e) {
-    e.preventDefault();
+  function isValidUrl(value) {
+    try {
+      const url = new URL(value);
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
+      return false;
+    }
+  }
+
+  function validateForm() {
+    const nextErrors = {};
+
+    if (!game.title.trim()) {
+      nextErrors.title = "Please enter your game title.";
+    }
+
+    if (!game.description.trim()) {
+      nextErrors.description = "Please enter your game description.";
+    }
+
+    if (!game.repoUrl.trim()) {
+      nextErrors.repoUrl = "Please enter your GitHub repository URL.";
+    } else if (!isValidUrl(game.repoUrl)) {
+      nextErrors.repoUrl = "Please enter a valid GitHub URL.";
+    } else if (!game.repoUrl.toLowerCase().includes("github.com")) {
+      nextErrors.repoUrl = "Please enter a GitHub repository link.";
+    }
+
+    if (!game.playableUrl.trim()) {
+      nextErrors.playableUrl = "Please enter your playable game URL.";
+    } else if (!isValidUrl(game.playableUrl)) {
+      nextErrors.playableUrl = "Please enter a valid playable game URL.";
+    }
+
+    if (game.videoUrl.trim() && !isValidUrl(game.videoUrl)) {
+      nextErrors.videoUrl = "Please enter a valid demo video URL.";
+    }
+
+    setErrors(nextErrors);
+
+    return Object.keys(nextErrors).length === 0;
+  }
+
+  function handleSave(event) {
+    event.preventDefault();
+
+    if (!validateForm()) {
+      setMessage("Please correct the highlighted fields.");
+      return;
+    }
+
     setSavedGame({ ...game });
-    setShowSaved(true);
-    alert("Sample submission saved successfully!");
+    setIsEditing(false);
+    setErrors({});
+    setMessage("Your sample game submission has been saved successfully!");
+  }
+
+  function handleEdit() {
+    if (!isOpen) return;
+
+    setGame({ ...savedGame });
+    setErrors({});
+    setMessage("");
+    setIsEditing(true);
+  }
+
+  function handleCancel() {
+    setGame({ ...savedGame });
+    setErrors({});
+    setMessage("");
+    setIsEditing(false);
+  }
+
+  function changePreview(open) {
+    setIsOpen(open);
+    setIsEditing(false);
+    setMessage("");
+    setErrors({});
   }
 
   return (
-    <div className="buildathon-submission">
+    <main className="submission-page">
       <style>{`
-        .buildathon-submission {
+        .submission-page {
+          --sp-bg: #080a1c;
+          --sp-panel: rgba(13, 17, 39, .92);
+          --sp-cyan: #00d9f5;
+          --sp-pink: #f725d8;
+          --sp-text: #f5f7ff;
+          --sp-muted: #aab3c8;
+          --sp-line: rgba(0, 217, 245, .24);
+
           min-height: 100vh;
-          padding: 35px 6%;
+          padding: 34px 6%;
           box-sizing: border-box;
+          color: var(--sp-text);
+
           background:
-            radial-gradient(ellipse at 85% 5%, rgba(0,217,245,0.13), transparent 32%),
-            radial-gradient(ellipse at 10% 55%, rgba(247,37,216,0.12), transparent 35%),
-            #080A1C;
-          color: #F5F7FF;
-          font-family: Arial, sans-serif;
+            radial-gradient(
+              ellipse at 85% 4%,
+              rgba(0,217,245,.13),
+              transparent 32%
+            ),
+            radial-gradient(
+              ellipse at 8% 55%,
+              rgba(247,37,216,.11),
+              transparent 34%
+            ),
+            var(--sp-bg);
+
+          font-family: "Rajdhani", system-ui, sans-serif;
         }
 
-        .bs-container {
+        .submission-page * {
+          box-sizing: border-box;
+        }
+
+        .sp-logo,
+        .sp-hero h1,
+        .sp-card h2,
+        .sp-locked h2 {
+          font-family: "Orbitron", system-ui, sans-serif;
+        }
+
+        .sp-container {
+          width: 100%;
           max-width: 1150px;
-          margin: auto;
+          margin: 0 auto;
         }
 
-        .bs-topbar {
+        .sp-topbar {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 65px;
-          gap: 15px;
+          gap: 16px;
           padding-bottom: 20px;
-          border-bottom: 1px solid rgba(0,217,245,0.2);
+          margin-bottom: 48px;
+          border-bottom: 1px solid var(--sp-line);
         }
 
-        .bs-logo {
+        .sp-logo {
+          color: #fff;
           font-size: 23px;
           font-weight: 900;
           letter-spacing: 2px;
-          color: white;
         }
 
-        .bs-logo span {
-          color: #F725D8;
+        .sp-logo span {
+          color: var(--sp-pink);
         }
 
-        .bs-tag {
-          padding: 9px 16px;
-          border: 1px solid rgba(0,217,245,0.5);
+        .sp-tag,
+        .sp-status,
+        .sp-saved-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          padding: 9px 13px;
+          border: 1px solid var(--sp-line);
           border-radius: 5px;
-          background: rgba(0,217,245,0.08);
-          color: #00D9F5;
-          font-size: 12px;
+          background: rgba(0,217,245,.07);
+          color: var(--sp-cyan);
+          font-size: 11px;
+          font-weight: 700;
           letter-spacing: 1px;
         }
 
-        .bs-hero {
+        .sp-hero {
           text-align: center;
-          margin-bottom: 45px;
+          margin: 0 auto 34px;
+          max-width: 720px;
         }
 
-        .bs-label {
-          display: inline-block;
-          color: #F725D8;
-          font-size: 12px;
+        .sp-eyebrow {
+          color: var(--sp-pink);
+          font-size: 11px;
+          font-weight: 800;
           letter-spacing: 4px;
-          font-weight: bold;
         }
 
-        .bs-hero h1 {
-          margin: 20px 0 15px;
-          font-size: clamp(35px, 6vw, 62px);
+        .sp-hero h1 {
+          margin: 16px 0 12px;
+          color: #fff;
+          font-size: clamp(34px, 6vw, 60px);
+          line-height: 1.08;
           font-weight: 900;
-          letter-spacing: 2px;
-          color: white;
-          text-transform: uppercase;
+          letter-spacing: 1px;
         }
 
-        .bs-hero h1 span {
-          color: #00D9F5;
+        .sp-hero h1 span {
+          color: var(--sp-cyan);
         }
 
-        .bs-hero p {
-          color: #AAB3C8;
-          line-height: 1.8;
+        .sp-hero p {
+          color: var(--sp-muted);
           font-size: 15px;
+          line-height: 1.8;
+          margin: 0;
         }
 
-        .bs-demo {
+        .sp-preview-controls {
           display: flex;
           justify-content: center;
-          gap: 12px;
-          margin-bottom: 30px;
           flex-wrap: wrap;
+          gap: 10px;
+          margin: 0 0 28px;
         }
 
-        .bs-demo button {
-          padding: 12px 20px;
-          border: 1px solid #F725D8;
+        .sp-button {
+          border: 1px solid var(--sp-pink);
           border-radius: 5px;
+          padding: 11px 17px;
+          color: var(--sp-pink);
           background: transparent;
-          color: #F725D8;
+          font: inherit;
+          font-size: 13px;
+          font-weight: 700;
           cursor: pointer;
-          font-weight: bold;
-          transition: 0.2s;
+          transition: all .2s ease;
         }
 
-        .bs-demo button:hover,
-        .bs-demo button.active {
-          background: #F725D8;
-          color: white;
-          box-shadow: 0 0 18px rgba(247,37,216,0.4);
+        .sp-button:hover,
+        .sp-button.active {
+          background: var(--sp-pink);
+          color: #fff;
+          box-shadow: 0 0 18px rgba(247,37,216,.3);
         }
 
-        .bs-grid {
+        .sp-grid {
           display: grid;
-          grid-template-columns: 1.5fr 0.8fr;
-          gap: 25px;
+          grid-template-columns: minmax(0, 1.5fr) minmax(260px, .8fr);
+          gap: 22px;
           align-items: start;
         }
 
-        .bs-card {
-          background: rgba(13,17,39,0.95);
-          border: 1px solid rgba(0,217,245,0.25);
+        .sp-card {
+          min-width: 0;
+          padding: 26px;
+          border: 1px solid var(--sp-line);
           border-radius: 10px;
-          padding: 28px;
-          box-shadow: 0 0 25px rgba(0,217,245,0.05);
+          background: var(--sp-panel);
+          box-shadow: 0 10px 35px rgba(0,0,0,.16);
         }
 
-        .bs-card h2 {
-          margin-top: 0;
-          color: white;
+        .sp-card h2 {
+          margin: 0 0 10px;
+          color: #fff;
           font-size: 21px;
         }
 
-        .bs-subtitle {
-          color: #AAB3C8;
+        .sp-subtitle {
+          margin: 0 0 22px;
+          color: var(--sp-muted);
           font-size: 13px;
           line-height: 1.7;
-          margin-bottom: 25px;
         }
 
-        .bs-status {
-          display: inline-block;
-          padding: 9px 14px;
-          border: 1px solid rgba(0,217,245,0.4);
-          border-radius: 4px;
-          background: rgba(0,217,245,0.08);
-          color: #00D9F5;
-          font-size: 12px;
-          font-weight: bold;
-          margin-bottom: 20px;
-        }
-
-        .bs-form label {
+        .sp-form label {
           display: block;
-          color: #F5F7FF;
+          margin: 18px 0 8px;
+          color: var(--sp-text);
           font-size: 13px;
-          font-weight: bold;
-          margin: 19px 0 9px;
+          font-weight: 700;
         }
 
-        .bs-required {
-          color: #F725D8;
+        .sp-required {
+          color: var(--sp-pink);
         }
 
-        .bs-form input,
-        .bs-form textarea {
+        .sp-form input,
+        .sp-form textarea {
+          display: block;
           width: 100%;
-          box-sizing: border-box;
-          padding: 14px;
-          background: #080A1C;
+          padding: 13px 14px;
           border: 1px solid #303955;
           border-radius: 5px;
-          color: white;
+          outline: none;
+          background: #080a1c;
+          color: #fff;
+          font: inherit;
           font-size: 14px;
-          font-family: inherit;
-          transition: 0.2s;
+          transition: border-color .2s, box-shadow .2s;
         }
 
-        .bs-form textarea {
-          min-height: 120px;
+        .sp-form textarea {
+          min-height: 118px;
           resize: vertical;
           line-height: 1.6;
         }
 
-        .bs-form input:focus,
-        .bs-form textarea:focus {
-          outline: none;
-          border-color: #00D9F5;
-          box-shadow: 0 0 12px rgba(0,217,245,0.2);
+        .sp-form input:focus,
+        .sp-form textarea:focus {
+          border-color: var(--sp-cyan);
+          box-shadow: 0 0 0 3px rgba(0,217,245,.1);
         }
 
-        .bs-form input::placeholder,
-        .bs-form textarea::placeholder {
-          color: #77819B;
+        .sp-form input::placeholder,
+        .sp-form textarea::placeholder {
+          color: #77819b;
         }
 
-        .bs-hint {
+        .sp-invalid {
+          border-color: #ff668a !important;
+        }
+
+        .sp-error {
           display: block;
-          color: #AAB3C8;
-          font-size: 11px;
+          margin-top: 6px;
+          color: #ff668a;
+          font-size: 12px;
+        }
+
+        .sp-hint {
+          display: block;
           margin-top: 7px;
+          color: var(--sp-muted);
+          font-size: 11px;
         }
 
-        .bs-submit {
+        .sp-submit {
           width: 100%;
-          margin-top: 28px;
-          padding: 16px;
-          border: none;
+          margin-top: 25px;
+          padding: 14px 18px;
+          border: 1px solid var(--sp-pink);
           border-radius: 5px;
-          background: #F725D8;
-          color: white;
-          font-size: 15px;
-          font-weight: bold;
+          background: var(--sp-pink);
+          color: #fff;
+          font: inherit;
+          font-size: 14px;
+          font-weight: 800;
           cursor: pointer;
-          transition: 0.2s;
-          box-shadow: 0 0 15px rgba(247,37,216,0.25);
+          box-shadow: 0 0 16px rgba(247,37,216,.2);
+          transition: transform .2s, box-shadow .2s;
         }
 
-        .bs-submit:hover {
+        .sp-submit:hover {
           transform: translateY(-2px);
-          box-shadow: 0 0 25px rgba(247,37,216,0.5);
+          box-shadow: 0 0 24px rgba(247,37,216,.4);
         }
 
-        .bs-guideline {
+        .sp-cancel {
+          margin: 14px 0 0 10px;
+        }
+
+        .sp-message {
+          margin: 0 0 18px;
+          padding: 12px 14px;
+          border: 1px solid rgba(0,217,245,.4);
+          border-radius: 5px;
+          background: rgba(0,217,245,.07);
+          color: var(--sp-cyan);
+          font-size: 13px;
+        }
+
+        .sp-message.error {
+          border-color: rgba(255,102,138,.5);
+          background: rgba(255,102,138,.07);
+          color: #ff668a;
+        }
+
+        .sp-guide-item {
           display: flex;
           gap: 12px;
           align-items: flex-start;
           padding: 14px 0;
-          border-bottom: 1px solid #252D48;
+          border-bottom: 1px solid #252d48;
         }
 
-        .bs-guideline:last-child {
-          border-bottom: none;
+        .sp-guide-item:last-child {
+          border-bottom: 0;
         }
 
-        .bs-icon {
-          width: 35px;
-          height: 35px;
-          flex-shrink: 0;
+        .sp-guide-icon {
           display: grid;
           place-items: center;
+          flex: 0 0 36px;
+          width: 36px;
+          height: 36px;
+          border: 1px solid rgba(247,37,216,.25);
           border-radius: 5px;
-          background: rgba(247,37,216,0.1);
-          border: 1px solid rgba(247,37,216,0.25);
-          color: #F725D8;
+          background: rgba(247,37,216,.1);
           font-size: 17px;
         }
 
-        .bs-guideline strong {
+        .sp-guide-item strong {
           display: block;
-          font-size: 13px;
           margin-bottom: 5px;
-          color: white;
+          color: #fff;
+          font-size: 13px;
         }
 
-        .bs-guideline p {
-          color: #AAB3C8;
+        .sp-guide-item p {
+          margin: 0;
+          color: var(--sp-muted);
           font-size: 12px;
           line-height: 1.6;
-          margin: 0;
         }
 
-        .bs-tip {
-          margin-top: 22px;
-          padding: 17px;
-          border: 1px solid rgba(0,217,245,0.35);
-          background: rgba(0,217,245,0.06);
+        .sp-tip {
+          margin-top: 20px;
+          padding: 16px;
+          border: 1px solid rgba(0,217,245,.3);
           border-radius: 7px;
-          color: #AAB3C8;
+          background: rgba(0,217,245,.05);
+          color: var(--sp-muted);
           font-size: 12px;
           line-height: 1.7;
         }
 
-        .bs-tip strong {
-          color: #00D9F5;
+        .sp-tip strong {
+          color: var(--sp-cyan);
         }
 
-        .bs-locked {
-          text-align: center;
-          padding: 45px 25px;
-          border: 1px solid rgba(247,37,216,0.45);
-          border-radius: 10px;
-          background: rgba(247,37,216,0.06);
-          margin-bottom: 25px;
+        .sp-saved {
+          margin-top: 24px;
         }
 
-        .bs-lock-icon {
-          font-size: 42px;
-          margin-bottom: 15px;
-        }
-
-        .bs-locked h2 {
-          color: #F725D8;
-        }
-
-        .bs-locked p {
-          color: #AAB3C8;
-          line-height: 1.8;
-        }
-
-        .bs-saved {
-          margin-top: 35px;
-          background: #0D1127;
-          border: 1px solid rgba(247,37,216,0.35);
-          border-radius: 10px;
-          padding: 27px;
-        }
-
-        .bs-saved-heading {
+        .sp-saved-head {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          gap: 12px;
           flex-wrap: wrap;
+          gap: 10px;
         }
 
-        .bs-saved-badge {
-          padding: 8px 12px;
-          background: rgba(0,217,245,0.1);
-          border: 1px solid rgba(0,217,245,0.4);
-          color: #00D9F5;
-          border-radius: 4px;
-          font-size: 11px;
-          font-weight: bold;
+        .sp-saved h2 {
+          margin: 20px 0 10px;
+          font-size: 23px;
         }
 
-        .bs-saved h2 {
-          font-size: 24px;
-          margin: 18px 0 10px;
-          color: white;
-        }
-
-        .bs-saved p {
-          color: #AAB3C8;
+        .sp-saved p {
+          color: var(--sp-muted);
           font-size: 13px;
           line-height: 1.8;
           overflow-wrap: anywhere;
         }
 
-        .bs-saved a {
-          color: #00D9F5;
+        .sp-saved a {
+          color: var(--sp-cyan);
           text-decoration: none;
           overflow-wrap: anywhere;
         }
 
-        .bs-saved a:hover {
-          color: #F725D8;
+        .sp-saved a:hover {
+          color: var(--sp-pink);
           text-decoration: underline;
         }
 
-        .bs-footer {
+        .sp-edit {
+          margin-top: 10px;
+          background: var(--sp-pink);
+          color: #fff;
+        }
+
+        .sp-locked {
+          margin-bottom: 24px;
+          padding: 38px 24px;
+          border: 1px solid rgba(247,37,216,.4);
+          border-radius: 10px;
+          background: rgba(247,37,216,.06);
           text-align: center;
-          color: #77819B;
-          font-size: 12px;
-          margin-top: 55px;
-          padding-bottom: 15px;
+        }
+
+        .sp-lock-icon {
+          margin-bottom: 12px;
+          font-size: 38px;
+        }
+
+        .sp-locked h2 {
+          color: var(--sp-pink);
+        }
+
+        .sp-locked p {
+          color: var(--sp-muted);
+          line-height: 1.8;
+        }
+
+        .sp-footer {
+          margin-top: 48px;
+          padding-bottom: 12px;
+          color: #77819b;
+          text-align: center;
+          font-size: 11px;
           letter-spacing: 1px;
         }
 
-        @media(max-width: 800px) {
-          .bs-grid {
+        @media (max-width: 800px) {
+          .sp-grid {
             grid-template-columns: 1fr;
           }
 
-          .bs-topbar {
-            margin-bottom: 45px;
+          .sp-topbar {
+            margin-bottom: 38px;
           }
         }
 
-        @media(max-width: 500px) {
-          .buildathon-submission {
-            padding: 25px 15px;
+        @media (max-width: 520px) {
+          .submission-page {
+            padding: 24px 15px;
           }
 
-          .bs-card {
+          .sp-card {
             padding: 19px;
           }
 
-          .bs-hero h1 {
-            font-size: 34px;
+          .sp-topbar {
+            align-items: flex-start;
+            flex-direction: column;
+          }
+
+          .sp-hero h1 {
+            font-size: 35px;
           }
         }
       `}</style>
 
-      <div className="bs-container">
-
-        <nav className="bs-topbar">
-          <div className="bs-logo">
+      <div className="sp-container">
+        <nav className="sp-topbar">
+          <div className="sp-logo">
             BUILD<span>ATHON.</span>
           </div>
 
-          <div className="bs-tag">
+          <span className="sp-tag">
             2026 · GAME SUBMISSION
-          </div>
+          </span>
         </nav>
 
-        <header className="bs-hero">
-          <span className="bs-label">
+        <header className="sp-hero">
+          <span className="sp-eyebrow">
             YOUR IDEAS. YOUR CREATION.
           </span>
 
@@ -446,227 +577,312 @@ export default function SubmissionPage() {
           </p>
         </header>
 
-        <div className="bs-demo">
+        <div className="sp-preview-controls">
           <button
-            className={isOpen ? "active" : ""}
-            onClick={() => setIsOpen(true)}
+            type="button"
+            className={`sp-button ${isOpen ? "active" : ""}`}
+            onClick={() => changePreview(true)}
           >
             Preview Open State
           </button>
 
           <button
-            className={!isOpen ? "active" : ""}
-            onClick={() => setIsOpen(false)}
+            type="button"
+            className={`sp-button ${!isOpen ? "active" : ""}`}
+            onClick={() => changePreview(false)}
           >
             Preview Closed State
           </button>
         </div>
 
-        {isOpen ? (
-          <div className="bs-grid">
-
-            <section className="bs-card">
-              <span className="bs-status">
+        {isOpen && isEditing ? (
+          <div className="sp-grid">
+            <section className="sp-card">
+              <span className="sp-status">
                 ● SUBMISSIONS OPEN
               </span>
 
-              <h2>Submit Your Game</h2>
+              <h2>Edit Your Game Submission</h2>
 
-              <p className="bs-subtitle">
-                Complete the details below to showcase your team's
-                game project to the Buildathon judges.
+              <p className="sp-subtitle">
+                Enter your team's game information below.
+                Required fields are marked with an asterisk.
               </p>
 
-              <form className="bs-form" onSubmit={handleSave}>
+              {message && (
+                <div
+                  className={`sp-message ${
+                    Object.keys(errors).length ? "error" : ""
+                  }`}
+                >
+                  {message}
+                </div>
+              )}
 
-                <label>
-                  Game Title <span className="bs-required">*</span>
+              <form
+                className="sp-form"
+                onSubmit={handleSave}
+                noValidate
+              >
+                <label htmlFor="game-title">
+                  Game Title <span className="sp-required">*</span>
                 </label>
 
                 <input
-                  type="text"
+                  id="game-title"
                   name="title"
-                  placeholder="Enter your game title"
                   value={game.title}
                   onChange={handleChange}
-                  required
+                  placeholder="Enter your game title"
+                  className={errors.title ? "sp-invalid" : ""}
                 />
 
-                <label>
-                  Game Description <span className="bs-required">*</span>
+                {errors.title && (
+                  <span className="sp-error">{errors.title}</span>
+                )}
+
+                <label htmlFor="game-description">
+                  Game Description <span className="sp-required">*</span>
                 </label>
 
                 <textarea
+                  id="game-description"
                   name="description"
-                  placeholder="Describe your game, its features and how to play..."
                   value={game.description}
                   onChange={handleChange}
-                  required
+                  placeholder="Describe your game, its features and how to play..."
+                  className={errors.description ? "sp-invalid" : ""}
                 />
 
-                <label>
-                  GitHub Repository URL <span className="bs-required">*</span>
+                {errors.description && (
+                  <span className="sp-error">{errors.description}</span>
+                )}
+
+                <label htmlFor="game-repo">
+                  GitHub Repository URL <span className="sp-required">*</span>
                 </label>
 
                 <input
+                  id="game-repo"
                   type="url"
                   name="repoUrl"
-                  placeholder="https://github.com/your-team/game"
                   value={game.repoUrl}
                   onChange={handleChange}
-                  required
+                  placeholder="https://github.com/your-team/game"
+                  className={errors.repoUrl ? "sp-invalid" : ""}
                 />
 
-                <label>
-                  Playable Game URL <span className="bs-required">*</span>
+                {errors.repoUrl && (
+                  <span className="sp-error">{errors.repoUrl}</span>
+                )}
+
+                <label htmlFor="game-playable">
+                  Playable Game URL <span className="sp-required">*</span>
                 </label>
 
                 <input
+                  id="game-playable"
                   type="url"
                   name="playableUrl"
-                  placeholder="https://your-game-link.com"
                   value={game.playableUrl}
                   onChange={handleChange}
-                  required
+                  placeholder="https://your-game-link.com"
+                  className={errors.playableUrl ? "sp-invalid" : ""}
                 />
 
-                <label>Demo Video URL (Optional)</label>
+                {errors.playableUrl && (
+                  <span className="sp-error">{errors.playableUrl}</span>
+                )}
+
+                <label htmlFor="game-video">
+                  Demo Video URL (Optional)
+                </label>
 
                 <input
+                  id="game-video"
                   type="url"
                   name="videoUrl"
-                  placeholder="https://youtube.com/your-demo"
                   value={game.videoUrl}
                   onChange={handleChange}
+                  placeholder="https://youtube.com/your-demo"
+                  className={errors.videoUrl ? "sp-invalid" : ""}
                 />
 
-                <span className="bs-hint">
+                {errors.videoUrl && (
+                  <span className="sp-error">{errors.videoUrl}</span>
+                )}
+
+                <span className="sp-hint">
                   You can provide a YouTube or other accessible video link.
                 </span>
 
-                <button type="submit" className="bs-submit">
+                <button type="submit" className="sp-submit">
                   ✦ Save Sample Submission
                 </button>
 
+                <button
+                  type="button"
+                  className="sp-button sp-cancel"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
               </form>
             </section>
 
             <aside>
-              <section className="bs-card">
+              <section className="sp-card">
                 <h2>Submission Guide</h2>
 
-                <p className="bs-subtitle">
-                  A few things to remember before submitting your game.
+                <p className="sp-subtitle">
+                  Remember these things before submitting your game.
                 </p>
 
-                <div className="bs-guideline">
-                  <div className="bs-icon">🎮</div>
+                <div className="sp-guide-item">
+                  <div className="sp-guide-icon">🎮</div>
                   <div>
                     <strong>Original Game</strong>
-                    <p>Submit your team's own completed game project.</p>
+                    <p>
+                      Submit your team's own completed game project.
+                    </p>
                   </div>
                 </div>
 
-                <div className="bs-guideline">
-                  <div className="bs-icon">💻</div>
+                <div className="sp-guide-item">
+                  <div className="sp-guide-icon">💻</div>
                   <div>
                     <strong>GitHub Repository</strong>
-                    <p>Make sure your repository link is accessible.</p>
+                    <p>
+                      Make sure your repository link is accessible.
+                    </p>
                   </div>
                 </div>
 
-                <div className="bs-guideline">
-                  <div className="bs-icon">🚀</div>
+                <div className="sp-guide-item">
+                  <div className="sp-guide-icon">🚀</div>
                   <div>
                     <strong>Playable Link</strong>
-                    <p>Provide a working link so judges can test your game.</p>
+                    <p>
+                      Provide a working link so judges can test your game.
+                    </p>
                   </div>
                 </div>
 
-                <div className="bs-guideline">
-                  <div className="bs-icon">🎥</div>
+                <div className="sp-guide-item">
+                  <div className="sp-guide-icon">🎥</div>
                   <div>
                     <strong>Demo Video</strong>
-                    <p>Include a demonstration video if available.</p>
+                    <p>
+                      Include a demonstration video if available.
+                    </p>
                   </div>
                 </div>
               </section>
 
-              <div className="bs-tip">
+              <div className="sp-tip">
                 <strong>✦ PRO TIP</strong>
                 <br />
                 Check all your links before submitting. Make sure
                 your game is ready for the judges!
               </div>
             </aside>
-
           </div>
         ) : (
-          <section className="bs-locked">
-            <div className="bs-lock-icon">🔒</div>
+          <>
+            {!isOpen && (
+              <section className="sp-locked">
+                <div className="sp-lock-icon">🔒</div>
 
-            <h2>Submissions Are Closed</h2>
+                <h2>Submissions Are Closed</h2>
 
-            <p>
-              The game submission period has ended.
-              You can view your existing submission,
-              but you cannot create or edit it.
-            </p>
-          </section>
+                <p>
+                  The game submission period has ended.
+                  <br />
+                  You can view your existing submission,
+                  but you cannot create or edit it.
+                </p>
+              </section>
+            )}
+
+            <section className="sp-card sp-saved">
+              <div className="sp-saved-head">
+                <span className="sp-saved-badge">
+                  ✓ SAVED EXAMPLE {isOpen ? "" : "— READ ONLY"}
+                </span>
+
+                {isOpen && (
+                  <span className="sp-tag">
+                    SAMPLE PROJECT
+                  </span>
+                )}
+              </div>
+
+              <h2>🎮 {savedGame.title}</h2>
+
+              <p>{savedGame.description}</p>
+
+              <p>
+                <strong>GitHub Repository: </strong>
+                <a
+                  href={savedGame.repoUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {savedGame.repoUrl}
+                </a>
+              </p>
+
+              <p>
+                <strong>Playable Game: </strong>
+                <a
+                  href={savedGame.playableUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {savedGame.playableUrl}
+                </a>
+              </p>
+
+              <p>
+                <strong>Demo Video: </strong>
+
+                {savedGame.videoUrl ? (
+                  <a
+                    href={savedGame.videoUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {savedGame.videoUrl}
+                  </a>
+                ) : (
+                  "Not provided"
+                )}
+              </p>
+
+              {message && (
+                <div className="sp-message">
+                  {message}
+                </div>
+              )}
+
+              {isOpen && (
+                <button
+                  type="button"
+                  className="sp-button sp-edit"
+                  onClick={handleEdit}
+                >
+                  ✎ Edit Submission
+                </button>
+              )}
+            </section>
+          </>
         )}
 
-        {showSaved && savedGame && (
-          <section className="bs-saved">
-
-            <div className="bs-saved-heading">
-              <span className="bs-saved-badge">
-                ✓ SAVED EXAMPLE
-              </span>
-
-              <span className="bs-tag">
-                SAMPLE PROJECT
-              </span>
-            </div>
-
-            <h2>🎮 {savedGame.title}</h2>
-
-            <p>{savedGame.description}</p>
-
-            <p>
-              <strong>GitHub Repository: </strong>
-              <a
-                href={savedGame.repoUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {savedGame.repoUrl}
-              </a>
-            </p>
-
-            <p>
-              <strong>Playable Game: </strong>
-              <a
-                href={savedGame.playableUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {savedGame.playableUrl}
-              </a>
-            </p>
-
-            <p>
-              <strong>Demo Video: </strong>
-              {savedGame.videoUrl || "Not provided"}
-            </p>
-
-          </section>
-        )}
-
-        <footer className="bs-footer">
+        <footer className="sp-footer">
           BUILDATHON 2026 · CREATE. INNOVATE. COMPETE.
         </footer>
-
       </div>
-    </div>
+    </main>
   );
 }
+
